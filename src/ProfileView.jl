@@ -221,24 +221,15 @@ mimewritable(::MIME"image/svg+xml", pd::ProfileData) = true
             join(["$(l.func) in $(basename(string(l.file))):$(l.line)" for l in li], "; ")
         end
         info = eschtml(info)
-        shortinfo = eschtml(shortinfo)
-        #if avgcharwidth*3 > width
-        #    shortinfo = ""
-        #elseif length(shortinfo) * avgcharwidth > width
-        #    nchars = int(width/avgcharwidth)-2
-        #    shortinfo = eschtml(info[1:nchars] * "..")
-        #end
-        red = round(Integer,255*rgb.r)
-        green = round(Integer,255*rgb.g)
-        blue = round(Integer,255*rgb.b)
-        print(f, """<rect vector-effect="non-scaling-stroke" x="$xstart" y="$y" width="$width" height="$ystep" fill="rgb($red,$green,$blue)" rx="2" ry="2" data-shortinfo="$shortinfo" data-info="$info"/>\n""")
-        #if shortinfo != ""
-        println(f, """\n<text text-anchor="" x="$(xstart+4)" y="$(y+11.5)" font-size="12" font-family="Verdana" fill="rgb(0,0,0)" ></text>""")
-        # end
+        shortinfo = info
+        print(f, """{x:$xstart,y:$y,width:$width,height:$ystep,fill:"$(hex(rgb))",shortinfo:"$shortinfo",info:"$info"},\n""")
     end
 
     fig_id = string("fig-", replace(string(Base.Random.uuid4()), "-", ""))
     svgheader(f, fig_id, width=width, height=height)
+    print(f, """<script type="text/javascript">
+        data = [
+        """)
     # rectangles are on a grid and split across multiple columns (must span similar adjacent ones together)
     for r in 1:nrows
         # top of rectangle:
@@ -275,6 +266,7 @@ mimewritable(::MIME"image/svg+xml", pd::ProfileData) = true
             prevtag = tag
         end
     end
+    print(f, """];\n</script>""")
     svgfinish(f, fig_id)
 end
 
