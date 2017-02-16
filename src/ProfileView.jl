@@ -364,7 +364,7 @@ end
 # This skips the parent, gets everything else
 # (to avoid a problem with root with ip=0)
 function contains(parent::Node, ip2so::Dict)
-    ret = Array(Bool, 0)
+    ret = Vector{Bool}(0)
     contains!(ret, parent, ip2so)
     @show length(ip2so)
     @show length(ret)

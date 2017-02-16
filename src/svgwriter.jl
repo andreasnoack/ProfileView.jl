@@ -13,7 +13,7 @@ function svgheader(f::IO, fig_id::AbstractString; width=1200, height=706, font="
        <html>
        <head>
         <script>
-        $(escape_script(readall(reactjs)))
+        $(escape_script(readstring(reactjs)))
         </script>
        </head>
        <body>
@@ -43,7 +43,7 @@ end
 function svgfinish(f::IO, fig_id)
     print(f, """
         <script>
-            $(escape_script(readall(viewerjs)))
+            $(escape_script(readstring(viewerjs)))
         </script>
         </body>
         </html>
